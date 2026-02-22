@@ -7,5 +7,8 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
         "pool_recycle": 300,
-        "connect_args": {"connect_timeout": 5},
+        "connect_args": {
+            "connect_timeout": 10,
+            "sslmode": "require",
+        },
     }

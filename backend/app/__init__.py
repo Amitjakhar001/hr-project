@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
@@ -20,13 +20,22 @@ def create_app():
     app.register_blueprint(attendance_bp)
     app.register_blueprint(dashboard_bp)
 
+    @app.route("/")
+    def index():
+        return {"message": "HRMS Lite API", "status": "running"}
+
     @app.route("/api/health")
     def health():
         return {"status": "ok"}
 
+    @app.errorhandler(500)
+    def internal_error(e):
+        return jsonify({"error": "Internal server error"}), 500
+
     with app.app_context():
         try:
             db.create_all()
+            print("Database tables created successfully")
         except Exception as e:
             print(f"Warning: Could not create tables: {e}")
 
