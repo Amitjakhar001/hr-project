@@ -1,134 +1,68 @@
-# HRMS Lite
+HRMS Lite
 
-A lightweight Human Resource Management System built as a full-stack web application. It lets an admin manage employee records and track daily attendance through a clean, professional interface.
+A simple HR management app where an admin can add/delete employees and mark their daily attendance.
 
-## Live Demo
+Built with Next.js on the frontend and Flask on the backend, using PostgreSQL (Supabase) for the database.
+Frontend is deployed on Vercel, backend on Render using Docker.
 
-- **Frontend:** https://hr-project-frontend-vert.vercel.app
-- **Backend API:** https://hr-project-backend-bmwt.onrender.com
 
-> Note: The backend is hosted on Render's free tier, so it may take ~30 seconds to wake up on the first request if it's been idle.
+Live URLs:
 
-## Tech Stack
+Frontend  - https://hr-project-frontend-vert.vercel.app
+Backend   - https://hr-project-backend-bmwt.onrender.com
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | Next.js (React), TypeScript, Tailwind CSS |
-| Backend | Python, Flask, Flask-SQLAlchemy |
-| Database | PostgreSQL (hosted on Supabase) |
-| Deployment | Vercel (frontend), Render with Docker (backend) |
+Backend is on Render free tier so it might take 30s to wake up if idle.
 
-## Features
 
-**Employee Management**
-- Add new employees with ID, name, email, and department
-- View all employees in a table
-- Delete employees (with confirmation)
+How to run locally:
 
-**Attendance Tracking**
-- Mark attendance as Present or Absent for any date
-- View attendance history per employee
-- Filter records by date
-- See total present/absent day counts
+You need Python 3.10+, Node 18+, and a Postgres database.
 
-**Dashboard**
-- Overview of total employees
-- Today's attendance summary
-- Department-wise employee breakdown
+Backend:
 
-## Running Locally
+  cd backend
+  python -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
 
-### Prerequisites
+  Create a .env file in backend/ with:
 
-- Python 3.10+
-- Node.js 18+
-- A PostgreSQL database (or a free Supabase project)
+  DATABASE_URL=postgresql://postgres.sppqdirpdrbqaoyhwheq:1%403%235aA%26cC%40zx@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres
 
-### Backend Setup
+  Then run:
+  python run.py
 
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+  Server starts at http://localhost:5000
 
-Create a `.env` file inside `backend/`:
+Frontend:
 
-```
-DATABASE_URL=postgresql://your_user:your_password@your_host:5432/your_db
-```
+  cd frontend
+  npm install
 
-Then run:
+  Create a .env.local file in frontend/ with:
 
-```bash
-python run.py
-```
+  NEXT_PUBLIC_API_URL=http://localhost:5000
 
-The API will be available at `http://localhost:5000`.
+  Then run:
+  npm run dev
 
-### Frontend Setup
+  App starts at http://localhost:3000
 
-```bash
-cd frontend
-npm install
-```
 
-Create a `.env.local` file inside `frontend/`:
+API routes:
 
-```
-NEXT_PUBLIC_API_URL=http://localhost:5000
-```
+  GET    /api/health              - health check
+  GET    /api/employees           - list all employees
+  POST   /api/employees           - add employee
+  DELETE /api/employees/<id>      - delete employee
+  GET    /api/attendance/<emp_id> - get attendance records
+  POST   /api/attendance          - mark attendance
+  GET    /api/dashboard           - summary stats
 
-Then run:
 
-```bash
-npm run dev
-```
+Assumptions:
 
-The app will be available at `http://localhost:3000`.
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check |
-| GET | `/api/employees` | List all employees |
-| POST | `/api/employees` | Add a new employee |
-| DELETE | `/api/employees/:id` | Delete an employee |
-| GET | `/api/attendance/:emp_id` | Get attendance for an employee |
-| POST | `/api/attendance` | Mark attendance |
-| GET | `/api/dashboard` | Dashboard summary |
-
-## Project Structure
-
-```
-hr-project/
-├── backend/
-│   ├── app/
-│   │   ├── __init__.py          # App factory, DB init
-│   │   ├── config.py            # Database config
-│   │   ├── models.py            # Employee & Attendance models
-│   │   └── routes/
-│   │       ├── employees.py     # Employee CRUD
-│   │       ├── attendance.py    # Attendance endpoints
-│   │       └── dashboard.py     # Dashboard stats
-│   ├── run.py
-│   ├── requirements.txt
-│   └── Dockerfile
-├── frontend/
-│   ├── src/
-│   │   ├── app/                 # Next.js pages
-│   │   ├── components/          # Reusable UI components
-│   │   └── lib/api.ts           # API client
-│   └── package.json
-└── README.md
-```
-
-## Assumptions and Limitations
-
-- Single admin user — no login or authentication is implemented since it wasn't in scope
-- Departments are predefined in a dropdown (Engineering, Marketing, Sales, HR, Finance, Operations) rather than being dynamic
-- Attendance for the same employee + date combination gets updated (upserted) instead of throwing an error
-- The backend runs on Render's free tier which spins down after inactivity, so the first request after idle may be slow
-- No pagination on employee list or attendance records — works fine for the expected scale but would need it for larger datasets
+  No authentication since the assignment said single admin user.
+  Departments are a fixed dropdown, not user-created.
+  If you mark attendance for the same employee + date again, it updates the existing record.
+  No pagination, didn't feel necessary for this scale.
